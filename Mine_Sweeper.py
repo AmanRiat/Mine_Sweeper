@@ -28,7 +28,9 @@ class OpeningScreen:
         print ("Now have fun!")
         print ("")
         print (" Start by pressing close on the opening Screen")
-
+root = Tk()
+my_gui = OpeningScreen(root)
+root.mainloop()
 
 class Game:
 
@@ -45,11 +47,43 @@ class Game:
 
         self.quitBtn = Button(self.bottomFrame, text='Quit', command=self.quit)
         self.quitBtn.grid(row=13, columnspan=2)
+        
+    def createButtons(self, parent):
+        self.buttons = {}
+        row = 0
+        col = 0
+        for x in range(0, 200):
+            status = random.choice(['safe', 'danger'])
+            self.buttons[x] = [
+            Button(parent, bg='#8a8a8a'),
+            status,
+            row,
+            col,
+            [0 if status == 'danger' else 1]
+            ]
 
+            self.buttons[x][0].bind('<Button-1>', self.leftClick_w(x))
+            self.buttons[x][0].bind('<Button-3>', self.rightClick_w(x))
+            col += 1
+            if col == 20:
+                col = 0
+                row += 1
+            for k in self.buttons:
+                self.buttons[k][0].grid(row= self.buttons[k][2], column= self.buttons[k][3])
+
+    
+
+    def quit(self):
+        global root
+        root.destroy()
 
 def main():
+    n = input ("Welcome to Minesweeper, press any key to continue: ") 
     global root
     root = Tk()
     root.title('MiNeSwEePeR')
     game = Game(root)
     root.mainloop()
+
+if __name__ == '__main__':
+    main()
