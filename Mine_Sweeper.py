@@ -77,7 +77,29 @@ class Game:
             for k in self.buttons:
                 self.buttons[k][0].grid(row= self.buttons[k][2], column= self.buttons[k][3])
 
-    
+     def leftClick_w(self, x):
+        return lambda Button: self.leftClick(x)
+
+    def rightClick_w(self, x):
+        return lambda Button: self.rightClick(x)
+
+    def leftClick(self, btn):
+        check = self.buttons[btn][1]
+        if check == 'safe':
+
+            self.buttons[btn][0].config(bg='green')
+            self.buttons[btn][0].config(state='disabled', relief=SUNKEN)
+            self.count += 1
+            self.nearbyMines(btn)
+            self.showNearby(btn)
+            win = self.checkWin()
+            if win:
+                self.victory()
+
+        if check == 'danger':
+            self.buttons[btn][0].config(bg='red')
+            self.buttons[btn][0].config(state='disabled', relief=SUNKEN)
+            self.lost()
 
     def quit(self):
         global root
