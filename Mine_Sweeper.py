@@ -47,6 +47,12 @@ class Game:
 
         self.quitBtn = Button(self.bottomFrame, text='Quit', command=self.quit)
         self.quitBtn.grid(row=13, columnspan=2)
+
+        self.total = 0
+        self.count = 0
+        for i in self.buttons:
+            if self.buttons[i][4][0] == 1:
+                self.total += 1
         
     def createButtons(self, parent):
         self.buttons = {}
