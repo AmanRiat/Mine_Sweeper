@@ -100,6 +100,18 @@ class Game:
             self.buttons[btn][0].config(bg='red')
             self.buttons[btn][0].config(state='disabled', relief=SUNKEN)
             self.lost()
+            
+      def rightClick(self, btn):
+        if self.flags > 0:
+            self.buttons[btn][0].config(bg='blue')
+            self.buttons[btn][0].config(state='disabled', relief=SUNKEN)
+            self.flags -= 1
+            self.flagRemainning.config(text= 'Flag Remaining : '+str(self.flags))
+            if self.buttons[btn][1] == 'safe':
+                self.count += 1
+
+        else:
+            showinfo('no flags', 'you run out of flags')
 
     def quit(self):
         global root
