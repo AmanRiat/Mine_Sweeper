@@ -9,25 +9,25 @@ import math
 class Minesweeper():
     def __init__(self, root, retry_diffic):
         self.master = root
-        # set up frame
+        
         self.frame = tkinter.Frame(self.master)
-        self.info_frame = tkinter.Frame(self.master)  # show the number of mine, clicked, time, retry btn
-        self.init_frame = tkinter.Frame(self.master)  # choose difficulty
+        self.info_frame = tkinter.Frame(self.master)  
+        self.init_frame = tkinter.Frame(self.master)  
         self.init_frame.pack(padx=10, pady=10)
 
-        # initialization
+       
         self.start_time = time.time()
         self.running_time = tkinter.IntVar(value=0)
 
-        self.first_try = 1  # 1 : Preventing First Click from being Mine
+        self.first_try = 1  
         self.max=0
         self.flag = 0
-        self.mines = tkinter.IntVar(value=0)  # the number of mine
-        self.clicked_num = tkinter.IntVar(value=0)  # the number of clicked
+        self.mines = tkinter.IntVar(value=0)  
+        self.clicked_num = tkinter.IntVar(value=0) 
         self.Diffic_Var = tkinter.StringVar(value='0')
         self.prob = 0
 
-        # import images
+       
         self.watch = tkinter.PhotoImage(file="graphics/timer.png")
         self.tile_plain = tkinter.PhotoImage(file="graphics/tile_plain.gif")
         self.tile_clicked = tkinter.PhotoImage(file="graphics/tile_clicked.gif")
@@ -38,7 +38,7 @@ class Minesweeper():
         for x in range(1, 9):
             self.tile_no.append(tkinter.PhotoImage(file="graphics/tile_" + str(x) + ".gif"))
 
-        # Game Start
+        
         self.set_menubar()
         if retry_diffic == '0':
             self.start_game()
@@ -65,26 +65,20 @@ class Minesweeper():
         game_menu.add_command(label="Exit", command=self.master.destroy)
 
     def create_buttons(self):
-        # create buttons
         self.buttons = dict({})
         while True:
             x_coord = 0
             y_coord = 1
             for x in range(0, self.max ** 2):
                 mine = 0
-                if random.uniform(0.0, 1.0) < self.prob:  # prob = 0.13 or 0.20 or 0,25
+                if random.uniform(0.0, 1.0) < self.prob: 
                     mine = 1
                     self.mines.set(self.mines.get() + 1)
-                # 0 = Button widget
-                # 1 = if a mine y/n (1/0)
-                # 2 = state (0 = unclicked, 1 = clicked, 2 = flagged)
-                # 3 = button id
-                # 4 = [x, y] coordinates in the grid
+
                 self.buttons[x] = [tkinter.Button(self.frame, image=self.tile_plain), mine, 0, x, [x_coord, y_coord]]
                 self.buttons[x][0].bind('<Button-1>', self.lclicked_wrapper(x))
                 self.buttons[x][0].bind('<Button-3>', self.rclicked_wrapper(x))
 
-                # calculate coords:
                 x_coord += 1
                 if x_coord == self.max:
                     x_coord = 0
@@ -106,32 +100,31 @@ class Minesweeper():
 
 
     def clear_init_frame(self):
-        self.init_frame.destroy() # destroy Choosing Diffic window
+        self.init_frame.destroy() 
 
-        # set diff
+
         self.prob = 0.20
         self.max = 10
 
-        # set up new frame
+
         self.frame.pack(padx=20, pady=10)
         self.info_frame.pack()
         self.create_buttons()
-        # set up timer
+
         self.timer()
 
     def lclicked(self, x):
-        # if found Mine in the first attempt.
+
         if self.first_try == 1 and self.buttons[x][1] == 1:
             self.buttons[x][1] = 0
             self.make_one_mine()
         else:
             self.first_try=0
 
-        # if mine
         if self.buttons[x][1] == 1:
             self.show_all_mines_lose()
             self.gameover()
-        # if not mine
+
         else:
             self.clicked_num.set(self.clicked_num.get()+1)
             self.buttons[x][2] = 1
@@ -143,14 +136,14 @@ class Minesweeper():
                 self.victory()
 
     def rclicked(self, x):
-        # if not flaged
+
         if self.buttons[x][2] == 0:
             self.buttons[x][0].config(image=self.tile_flag)
             self.buttons[x][2] = 2
             self.buttons[x][0].unbind('<Button-1>')
             self.mines.set(self.mines.get() - 1)
             self.flag += 1
-        # if flaged already
+ 
         elif self.buttons[x][2] == 2:
             self.buttons[x][2] = 0
             self.buttons[x][0].config(image=self.tile_plain)
@@ -165,10 +158,10 @@ class Minesweeper():
         return lambda Button: self.rclicked(x)
 
     def grid_widgets(self):
-        # show Title at the top
+
         self.Main_Label = tkinter.Label(self.frame, text="Minesweeper")
         self.Main_Label.grid(row=0, column=0, columnspan=30)
-        # lay information in grid
+
         self.lb_mine = tkinter.Label(self.info_frame, text="Mines :")
         self.lb_mine.grid(row=self.max + 2, column=0)
         self.lb_mine_num = tkinter.Label(self.info_frame, textvariable=self.mines)
@@ -186,23 +179,23 @@ class Minesweeper():
     def make_one_mine(self):
         while True:
             temp_x = random.randrange(0, self.max)
-            if self.buttons[temp_x][1] == 1: # if mine
+            if self.buttons[temp_x][1] == 1: 
                 continue
-            elif self.buttons[temp_x][1] == 0: #if not mine
-                self.buttons[temp_x][1] = 1 # make this mine
+            elif self.buttons[temp_x][1] == 0: 
+                self.buttons[temp_x][1] = 1 
                 break
         self.first_try = 0
 
     def show_all_mines_lose(self):
-        # show all mines
+
         for x in self.buttons:
-            if self.buttons[x][1] == 1:  # if mine
+            if self.buttons[x][1] == 1: 
                 self.buttons[x][0].config(image=self.tile_wrong)
 
     def show_all_mines_win(self):
         # show all mines
         for x in self.buttons:
-            if self.buttons[x][1] == 1:  # if mine
+            if self.buttons[x][1] == 1:  
                 self.buttons[x][0].config(image=self.tile_mine)
 
     def check_nearby(self, x):
@@ -213,13 +206,13 @@ class Minesweeper():
             for j in range(-1, 2):
                 key = idx - self.max + j
 
-                if key < 0 or key >= self.max**2:  # none exist space
+                if key < 0 or key >= self.max**2:  
                     continue
-                elif idx % self.max == self.max - 1 and key % self.max == 0 :  # physically not close space
+                elif idx % self.max == self.max - 1 and key % self.max == 0 :  
                     continue
-                elif idx % self.max == 0 and key % self.max == self.max - 1:  # physically not close space
+                elif idx % self.max == 0 and key % self.max == self.max - 1:  
                     continue
-                elif self.buttons[key][1] == 1:  # if mine
+                elif self.buttons[key][1] == 1:  
                     count += 1
 
         self.change_to_tile_no(x, count)
@@ -240,13 +233,13 @@ class Minesweeper():
             for j in range(-1, 2):
                 key = idx - self.max + j
 
-                if key < 0 or key >= self.max ** 2:  # none exist space
+                if key < 0 or key >= self.max ** 2:  
                     continue
-                elif idx % self.max == self.max - 1 and key % self.max == 0:  # physically not close space
+                elif idx % self.max == self.max - 1 and key % self.max == 0: 
                     continue
-                elif idx % self.max == 0 and key % self.max == self.max - 1:  # physically not close space
+                elif idx % self.max == 0 and key % self.max == self.max - 1:  
                     continue
-                elif self.buttons[key][1] == 0 and self.buttons[key][2] != 1:  # if not mine and unclicked
+                elif self.buttons[key][1] == 0 and self.buttons[key][2] != 1: 
                     self.lclicked(key)
 
     def gameover(self):
