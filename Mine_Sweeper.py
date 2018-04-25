@@ -4,6 +4,37 @@ from tkinter import messagebox
 import random
 import time
 import math
+from tkinter import Tk, Label, Button
+
+class OpeningScreen:
+    def __init__(self, master):
+        self.master = master
+        master.title("Opening")
+
+        self.label = Label(master, text="Welcome to Minesweeper!")
+        self.label.pack()
+
+        self.greet_button = Button(master, text="Help", command=self.greet)
+        self.greet_button.pack()
+
+        self.close_button = Button(master, text="Close", command=root.destroy)
+        self.close_button.pack()
+
+    def greet(self):
+        print("Wanna Learn more about minesweeper, well you came to the right place")
+        print ("")
+        print ("The goal of minesweeper is to click as many boxes without detonating any bombs")
+        print ("")
+        print ("If you do this you win! Otherwise if you press a bomb it explodes and you lose")
+        print ("")
+        print ("Now have fun!")
+        print ("")
+        print (" Start by pressing close on the opening Screen")
+
+
+root = Tk()
+my_gui = OpeningScreen(root)
+root.mainloop()
 
 
 class Minesweeper():
