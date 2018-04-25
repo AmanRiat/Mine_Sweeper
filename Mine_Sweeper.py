@@ -19,6 +19,21 @@ class Game:
         self.quitBtn = Button(self.bottomFrame, text='Quit', command=self.quit)
         self.quitBtn.grid(row=13, columnspan=2)
 
+from tkinter import Tk, Label, Button
+
+class OpeningScreen:
+    def __init__(self, master):
+        self.master = master
+        master.title("Opening")
+
+        self.label = Label(master, text="Welcome to Minesweeper!")
+        self.label.pack()
+
+        self.greet_button = Button(master, text="Help", command=self.greet)
+        self.greet_button.pack()
+
+        self.close_button = Button(master, text="Close", command=root.destroy)
+        self.close_button.pack()
 
 def main():
     global root
